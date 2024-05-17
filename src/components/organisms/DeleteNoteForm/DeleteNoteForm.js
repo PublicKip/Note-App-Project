@@ -3,9 +3,9 @@ import PopupContainer from '../../molecules/PopupContainer/PopupContainer';
 import Button from '../../atoms/Button/Button';
 import Icon from '../../atoms/Icon/Icon';
 
-function DeleteNoteForm({isDeleteNoteFormOpen, deleteNote, deleteFormOpenStateHandler}) {
+function DeleteNoteForm({noteIdToDelete, isDeleteNoteFormOpen, deleteNote, deleteFormOpenStateHandler}) {
   return (
-    <PopupContainer open={isDeleteNoteFormOpen.isFormVisible}>
+    <PopupContainer open={isDeleteNoteFormOpen}>
         <div className='delete-note'>
             <div className='delete-note__header'>
                 <h1>Delete note</h1>
@@ -15,7 +15,7 @@ function DeleteNoteForm({isDeleteNoteFormOpen, deleteNote, deleteFormOpenStateHa
             <div className='delete-note__ctas'>
               <Button text='Cancel' buttonType='ghost' clickHandler={deleteFormOpenStateHandler} />
               <Button text='Delete' buttonType='danger' clickHandler={(e) => {
-                deleteNote(isDeleteNoteFormOpen.noteIdToDelete);
+                deleteNote(noteIdToDelete);
                 deleteFormOpenStateHandler(e);
               }} />
             </div>

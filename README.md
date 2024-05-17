@@ -1,17 +1,6 @@
-# Note Taking App
+# Keys & Notes
 
-Make sure to install the following dependencies:
+![](./logos/KEys&Notes.png)
+![](./logos/Subheading.png)
 
-### `npm install`
-
-### `npm install react-redux`
-
-### `npm install @reduxjs/toolkit`
-
-### `npm install sass`
-
-Now you can start the project!!
-
-### `npm start`
-
-The app runs in [http://localhost:3000]
+Designed By: [LaKeesha Johnson](https://github.com/ljhnsn40), [Isabel Broncho](https://github.com/ibracho), [Amaya Moore](https://github.com/aamoore11), [Kavious Moment](https://github.com/KaviousD) and [Matthew Simpson](https://github.com/PublicKip)

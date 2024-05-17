@@ -81,12 +81,12 @@ web_modules/
 # commented out .env exclusions
 
 # dotenv environment variable files
-# */.env
-# .env
-# .env.development.local
-# .env.test.local
-# .env.production.local
-# .env.local
+*/.env
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
 # commented out .env exclusions
 # commented out .env exclusions

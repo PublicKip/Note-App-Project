@@ -36,12 +36,10 @@ const Note = require('./Schema.js')
 async function getNotes(userID) {
     try {
         await client.connect(); //connect to db
-        const database = client.db('NoteDB'); //checks for Database named NoteDB
-        const collection = database.collection(userID); //checks for collection within NoteDB with a name equal to userID
-        // const query = {}; create a variable holding the object / query you're searching for
-        // if we can't figure this out, worst case we put all notes into one giant Collection and query userID here
+        const database = client.db(userID); //checks for Database named NoteDB
+        const collection = database.collection('notes'); //checks for collection within NoteDB with a name equal to userID
         const result = await collection.find().toArray(); //await your async db query and store the result in a variable for use later
-        console.log(result); //log to the console if you want
+        // console.log(result); //log to the console if you want
         return result; //this returns a value when the function is called
     } catch(e) {
         console.error(e);
@@ -54,11 +52,11 @@ async function getNotes(userID) {
 //configure a route to the base url
 
 app.get('/FromAtlas', async (req, res) => {
-    notesArray = req.body // make sure this is JSON
-    userID = notesArray[0].userID // Obtain userID from request
+    let userID = req.query.userID // Obtain userID from request
     try {
         const notes = await getNotes(userID);
-        res.send(notes);
+        res.json(notes);
+        // console.log(notes)
     } catch (error) {
         console.error(error);
         res.status(500).send('Error fetching notes');
@@ -89,31 +87,31 @@ app.get('/FromAtlas', async (req, res) => {
 // could just take this routing from the function above or figure out how to do it in the URL itself
 async function saveNotes(userID, array) {
     try {
-        var mongooseArray = [] // array that holds the notes that fit the mongoose schema
-        console.log(URI + '/' + userID)
         await mongoose.connect(URI + '/' + userID);
+        // notes properly save and load now
+        // find a way to delete everything deleteMany({}) here
+        // await Note.deleteMany({});
         for (let i = 0; i < array.length; i++) {
             const noteObject = array[i];
-            const dbNote = new Note({ title: noteObject.title, category: noteObject.category , description: noteObject.description , date: noteObject.date , completed: noteObject.complete });
-            await dbNote.save().then(() => console.log('Note ' + noteObject.id + ' saved'))
-            // mongooseArray.push(dbNote); // push converted notes into array
+            const dbNote = new Note({ title: noteObject.title, id: noteObject.id, category: noteObject.category , description: noteObject.description , date: noteObject.date , completed: noteObject.complete });
+            await dbNote.save().then(() => console.log('Note ' + noteObject.title + ' saved'))
         };
-        // await mongooseArray.insertMany().then(() => console.log('notes saved')); // attempt to write entire array to atlas
-    } catch(e) {
+    }
+    catch(e) {
         console.error(e);
         throw e;
-    } finally {
-        await mongoose.disconnect();
+    }
+    finally {
+        mongoose.disconnect();
     }
 }
 
 app.post('/ToAtlas', async (req, res) => {
+    let userID = req.query.userID;
     let array = req.body;
-    let userID = 'User1' // take user's ID from first note in the array, might change later
+    console.log(req.body)
   try {
-    await saveNotes(userID, array) // figure out how to go through a whole array and fit it into a proper schema
-    // worst case: every note is parsed (fit into Mongo/Mongoose Schema) individually, then added to a new array (yet to be created), this array is then sent to mongo?
-    // ideally: Schema syntax will already go through full array, or there is a seperate function for it, OR we can create a for loop/map every part of the array
+    await saveNotes(userID, array)
     res.send('Notes Saved To Cloud');
   } catch (e) {
     console.log(e);
