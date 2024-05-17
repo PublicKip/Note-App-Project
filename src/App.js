@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import './App.scss';
 import Searchbar from './components/molecules/Searchbar/Searchbar';
 import NoteForm from './components/organisms/NoteForm/NoteForm';
@@ -8,7 +9,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { deleteNote } from './redux/reducers/notesReducers';
 
 import { connect } from "react-redux";
-import React, { useState } from 'react';
 import TabsContainer from './components/molecules/TabsContainer/TabsContainer';
 import EmptyState from './components/organisms/EmptyState/EmptyState';
 
@@ -17,22 +17,21 @@ import axios from 'axios';
 
 import logo from "./assets/icons/small K&N.png"
 
-
 // GET FROM ATLAS
 async function getNotes(userID) {
   try {
     const response = await axios.get('http://localhost:3010/FromAtlas' + '?userID=' + userID);
-      console.log(response.data);
-      var stringedResponse = JSON.stringify(response.data)
-      window.localStorage.setItem("notes", stringedResponse)
+    console.log(response.data);
+    var stringedResponse = JSON.stringify(response.data)
+    window.localStorage.setItem("notes", stringedResponse)
   } catch (error) {
     console.error(error);
   }
 }
 
 // SEND TO ATLAS
-let currentArray = store.getState().notes
-console.log(store.getState().notes)
+let currentArray = store.getState().notes;
+console.log(store.getState().notes);
 
 async function postNotes(userID) {
   try {
@@ -47,33 +46,28 @@ function App(props) {
   const [isDeleteNoteFormOpen, setIsDeleteNoteFormOpen] = useState(false);
   const [noteIdToDelete, setNoteIdToDelete] = useState('');
   const { user, loginWithRedirect, isAuthenticated, logout } = useAuth0();
+
+  const toggleDeleteNoteForm = (e) => {
+    // Check if e exists and has a target property before accessing it
+    const noteElement = e && e.target && e.target.closest('.note');
+    const noteId = noteElement ? noteElement.getAttribute('note-id') : '';
+    setIsDeleteNoteFormOpen(!isDeleteNoteFormOpen);
+    setNoteIdToDelete(noteId);
+  };
   
-const toggleDeleteNoteForm = (e) => {
-  const noteElement = e.target.closest('.note');
-  const noteId = noteElement ? noteElement.getAttribute('note-id') : '';
-  setIsDeleteNoteFormOpen(!isDeleteNoteFormOpen);
-  setNoteIdToDelete(noteId);
-};
 
-let loginButton = <button className="button__login" onClick={()=>{ loginWithRedirect() }}> Log In </button>
-let logoutButton = <button className="button__login" onClick={()=>{logout()}}> Log out </button>
-
-// console.log(isAuthenticated)
-// {isAuthenticated ? getNotes(user.nickname) : console.log('Not logged in')}
-// {isAuthenticated ? postNotes(user.nickname) : console.log('Not logged in')}
-
-// run multiple times, extremely messy
+  let loginButton = <button className="button__login" onClick={() => { loginWithRedirect() }}> Log In </button>;
+  let logoutButton = <button className="button__login" onClick={() => { logout() }}> Log out </button>;
 
   return (
-    // the layout of the entire app. Add some branding in here some where
     <>
       <div className="App">
-        Logged in: {isAuthenticated ? "yes": "no"}<br/>
+        Logged in: {isAuthenticated ? "yes" : "no"}<br />
         {isAuthenticated ? logoutButton : loginButton}
         <Searchbar />
         <div className="container">
           <h1>
-            <img src={logo} alt='Keys & Notes'/>
+            <img src={logo} alt='Keys & Notes' />
           </h1>
           <TabsContainer />
           {props.notes.length > 0 ? (
@@ -88,6 +82,7 @@ let logoutButton = <button className="button__login" onClick={()=>{logout()}}> L
             isDeleteNoteFormOpen={isDeleteNoteFormOpen}
             deleteNote={noteIdToDelete && console.log(noteIdToDelete)}
             deleteFormOpenStateHandler={toggleDeleteNoteForm}
+            toggleDeleteNoteForm={toggleDeleteNoteForm} // Pass toggleDeleteNoteForm as a prop
           />
         )}
       </div>
@@ -105,3 +100,4 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
+
