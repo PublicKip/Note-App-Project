@@ -88,9 +88,6 @@ app.get('/FromAtlas', async (req, res) => {
 async function saveNotes(userID, array) {
     try {
         await mongoose.connect(URI + '/' + userID);
-        // notes properly save and load now
-        // find a way to delete everything deleteMany({}) here
-        // await Note.deleteMany({});
         for (let i = 0; i < array.length; i++) {
             const noteObject = array[i];
             const dbNote = new Note({ title: noteObject.title, id: noteObject.id, category: noteObject.category , description: noteObject.description , date: noteObject.date , completed: noteObject.complete });

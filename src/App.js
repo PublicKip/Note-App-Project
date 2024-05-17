@@ -54,7 +54,11 @@ function App(props) {
     setIsDeleteNoteFormOpen(!isDeleteNoteFormOpen);
     setNoteIdToDelete(noteId);
   };
-  
+
+// runs twice everytime anything on page changes
+// don't know how to fix
+{isAuthenticated ? postNotes(user.nickname) : console.log('Not logged in')} // if Authenticated, send email to get route, else log error
+{isAuthenticated ? getNotes(user.nickname) : console.log('Not logged in')} // if Authenticated, send email to post route, else log error
 
   let loginButton = <button className="button__login" onClick={() => { loginWithRedirect() }}> Log In </button>;
   let logoutButton = <button className="button__login" onClick={() => { logout() }}> Log out </button>;
